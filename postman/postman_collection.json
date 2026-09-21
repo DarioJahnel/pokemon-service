@@ -1,0 +1,38 @@
+{
+  "info": {
+    "_postman_id": "0dbccba1-72bf-4e76-bbe4-e608015f91de",
+    "name": "Pokemon service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "4775018"
+  },
+  "item": [
+    {
+      "name": "/pokemon",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"species\": \"pikachu\",\r\n  \"trainerId\": \"0198f5e2-7c3a-7abc-8b12-123456789abc\",\r\n  \"genre\": \"MALE\",\r\n  \"ability\": \"static\",\r\n  \"isShiny\": false,\r\n  \"captureLocation\": \"Palet Town\",\r\n  \"stats\": [\r\n    {\r\n      \"name\": \"HP\",\r\n      \"value\": 35,\r\n      \"effort\": 0\r\n    },\r\n    {\r\n      \"name\": \"ATTACK\",\r\n      \"value\": 55,\r\n      \"effort\": 0\r\n    },\r\n    {\r\n      \"name\": \"DEFENSE\",\r\n      \"value\": 40,\r\n      \"effort\": 0\r\n    },\r\n    {\r\n      \"name\": \"SPECIAL_ATTACK\",\r\n      \"value\": 50,\r\n      \"effort\": 0\r\n    },\r\n    {\r\n      \"name\": \"SPECIAL_DEFENSE\",\r\n      \"value\": 50,\r\n      \"effort\": 0\r\n    },\r\n    {\r\n      \"name\": \"SPEED\",\r\n      \"value\": 90,\r\n      \"effort\": 0\r\n    }\r\n  ],\r\n  \"movements\": [\r\n    \"mega-punch\"\r\n  ]\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/pokemon",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "pokemon"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
