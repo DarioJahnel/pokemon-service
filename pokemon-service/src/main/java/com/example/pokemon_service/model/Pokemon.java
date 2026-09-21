@@ -46,23 +46,7 @@ public class Pokemon {
 	private Set<String> movements = new java.util.HashSet<>();
 	private String captureLocation;
 
-	protected Pokemon() {
-	}
-
-	public Pokemon(Trainer trainer, Genre genre, String ability, Boolean isShiny, PokemonLocation location,
-			Integer teamSlot, String heldItem, String species, List<PokemonStat> stats, Set<String> movements,
-			String captureLocation) {
-		this.trainer = trainer;
-		this.genre = genre;
-		this.ability = ability;
-		this.isShiny = isShiny;
-		this.location = location;
-		this.teamSlot = teamSlot;
-		this.heldItem = heldItem;
-		this.species = species;
-		this.stats = stats;
-		this.movements = movements;
-		this.captureLocation = captureLocation;
+	public Pokemon() {
 	}
 
 	public void validateStats() {
@@ -88,96 +72,107 @@ public class Pokemon {
 		return id;
 	}
 
-	public void setId(UUID id) {
+	public Pokemon setId(UUID id) {
 		this.id = id;
-	}
-
-	public Trainer getTrainer() {
-		return trainer;
-	}
-
-	public void setTrainer(Trainer trainer) {
-		this.trainer = trainer;
-	}
-
-	public Genre getGenre() {
-		return genre;
-	}
-
-	public void setGenre(Genre genre) {
-		this.genre = genre;
-	}
-
-	public String getAbility() {
-		return ability;
-	}
-
-	public void setAbility(String ability) {
-		this.ability = ability;
-	}
-
-	public Boolean getIsShiny() {
-		return isShiny;
-	}
-
-	public void setIsShiny(Boolean isShiny) {
-		this.isShiny = isShiny;
-	}
-
-	public PokemonLocation getLocation() {
-		return location;
-	}
-
-	public void setLocation(PokemonLocation location) {
-		this.location = location;
-	}
-
-	public Integer getTeamSlot() {
-		return teamSlot;
-	}
-
-	public void setTeamSlot(Integer teamSlot) {
-		this.teamSlot = teamSlot;
-	}
-
-	public String getHeldItem() {
-		return heldItem;
-	}
-
-	public void setHeldItem(String heldItem) {
-		this.heldItem = heldItem;
+		return this;
 	}
 
 	public String getSpecies() {
 		return species;
 	}
 
-	public void setSpecies(String species) {
+	public Pokemon setSpecies(String species) {
 		this.species = species;
+		return this;
+	}
+
+	public Trainer getTrainer() {
+		return trainer;
+	}
+
+	public Pokemon setTrainer(Trainer trainer) {
+		this.trainer = trainer;
+		return this;
 	}
 
 	public List<PokemonStat> getStats() {
 		return stats;
 	}
 
-	public void setStats(List<PokemonStat> stats) {
+	public Pokemon setStats(List<PokemonStat> stats) {
 		this.stats = stats;
+		return this;
+	}
+
+	public Genre getGenre() {
+		return genre;
+	}
+
+	public Pokemon setGenre(Genre genre) {
+		this.genre = genre;
+		return this;
+	}
+
+	public String getAbility() {
+		return ability;
+	}
+
+	public Pokemon setAbility(String ability) {
+		this.ability = ability;
+		return this;
+	}
+
+	public Boolean getIsShiny() {
+		return isShiny;
+	}
+
+	public Pokemon setShiny(Boolean shiny) {
+		isShiny = shiny;
+		return this;
+	}
+
+	public PokemonLocation getLocation() {
+		return location;
+	}
+
+	public Pokemon setLocation(PokemonLocation location) {
+		this.location = location;
+		return this;
+	}
+
+	public Integer getTeamSlot() {
+		return teamSlot;
+	}
+
+	public Pokemon setTeamSlot(Integer teamSlot) {
+		this.teamSlot = teamSlot;
+		return this;
+	}
+
+	public String getHeldItem() {
+		return heldItem;
+	}
+
+	public Pokemon setHeldItem(String heldItem) {
+		this.heldItem = heldItem;
+		return this;
 	}
 
 	public Set<String> getMovements() {
 		return movements;
 	}
 
-	public void setMovements(Set<String> movements) {
+	public Pokemon setMovements(Set<String> movements) {
 		this.movements = movements;
+		return this;
 	}
 
 	public String getCaptureLocation() {
 		return captureLocation;
 	}
 
-	public void setCaptureLocation(String captureLocation) {
+	public Pokemon setCaptureLocation(String captureLocation) {
 		this.captureLocation = captureLocation;
+		return this;
 	}
-
 }

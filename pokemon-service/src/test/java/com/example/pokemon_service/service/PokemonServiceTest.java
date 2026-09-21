@@ -1,19 +1,6 @@
 package com.example.pokemon_service.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import org.junit.jupiter.api.Test;
-
-import com.example.pokemon_service.client.PokeApiClientWrapper;
-import com.example.pokemon_service.dto.PokemonClientResponse;
-import com.example.pokemon_service.repository.PokemonRepository;
-import com.example.pokemon_service.repository.TrainerRepository;
-
-import reactor.core.publisher.Mono;
-import skaro.pokeapi.resource.pokemon.Pokemon;
 
 class PokemonServiceTest {
 

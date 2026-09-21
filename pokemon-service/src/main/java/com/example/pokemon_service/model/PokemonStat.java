@@ -30,14 +30,17 @@ public class PokemonStat {
 
 	private Integer effort;
 
+	private Integer genetic;
+
 	protected PokemonStat() {
 	}
 
-	public PokemonStat(Pokemon pokemon, StatType name, Integer value, Integer effort) {
+	public PokemonStat(Pokemon pokemon, StatType name, Integer value, Integer effort, Integer genetic) {
 		this.pokemon = pokemon;
 		this.name = name;
 		this.value = value;
 		this.effort = effort;
+		this.genetic = genetic;
 	}
 
 	public Long getId() {
@@ -78,6 +81,14 @@ public class PokemonStat {
 
 	public void setEffort(Integer effort) {
 		this.effort = effort;
+	}
+
+	public Integer getGenetic() {
+		return genetic;
+	}
+
+	public void setGenetic(Integer genetic) {
+		this.genetic = genetic;
 	}
 
 }

@@ -18,7 +18,7 @@ public class TrainerRepositoryImpl implements TrainerRepository {
 	private EntityManager entityManager;
 
 	@Override
-	public Optional<Trainer> findById(UUID id) {
+	public Optional<Trainer> findByIdForUpdate(UUID id) {
 		return Optional.ofNullable(entityManager.find(Trainer.class, id, LockModeType.PESSIMISTIC_WRITE));
 	}
 }

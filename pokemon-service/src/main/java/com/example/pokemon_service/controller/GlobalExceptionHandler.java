@@ -3,16 +3,20 @@ package com.example.pokemon_service.controller;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.example.pokemon_service.exception.InvalidPokemonException;
 import com.example.pokemon_service.exception.InvalidTrainerException;
 import com.example.pokemon_service.exception.PokeApiClientException;
 import com.example.pokemon_service.exception.PokemonNotFoundException;
 import com.example.pokemon_service.exception.TrainerNotFoundException;
+
+import jakarta.validation.ConstraintViolationException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -35,7 +39,7 @@ public class GlobalExceptionHandler {
                                 ? ex.getMessage()
                                 : "Pokemon not found";
 
-                return ResponseEntity.badRequest()
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
                                 .body(Map.of(MESSAGE_KEY, message));
         }
 
@@ -79,5 +83,24 @@ public class GlobalExceptionHandler {
 
                 return ResponseEntity.badRequest()
                                 .body(Map.of(MESSAGE_KEY, messages.toString()));
+        }
+
+        @ExceptionHandler(ConstraintViolationException.class)
+        public ResponseEntity<Map<String, String>> handleConstraintValidation(ConstraintViolationException ex) {
+                String message = (ex.getMessage() != null && !ex.getMessage().isBlank())
+                                ? ex.getMessage()
+                                : "Constraint violation occurred";
+
+                return ResponseEntity.badRequest()
+                                .body(Map.of(MESSAGE_KEY, message));
+        }
+
+        @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+        public ResponseEntity<Map<String, String>> handleMethodArgumentTypeMismatch(
+                        MethodArgumentTypeMismatchException ex) {
+                String message = String.format("%s has an unexpected value -> %s", ex.getPropertyName(), ex.getValue());
+
+                return ResponseEntity.badRequest()
+                                .body(Map.of(MESSAGE_KEY, message));
         }
 }

@@ -7,5 +7,5 @@ import com.example.pokemon_service.model.Trainer;
 
 public interface TrainerRepository {
 
-	Optional<Trainer> findById(UUID id);
+	Optional<Trainer> findByIdForUpdate(UUID id);
 }

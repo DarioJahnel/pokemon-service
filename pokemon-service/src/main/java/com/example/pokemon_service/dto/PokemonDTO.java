@@ -8,7 +8,7 @@ import java.util.UUID;
 import com.example.pokemon_service.model.PokemonStat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class CreatePokemonResponse {
+public class PokemonDTO {
         private String species;
         private UUID trainerId;
         private UUID pokemonId;
@@ -27,7 +27,7 @@ public class CreatePokemonResponse {
                 return species;
         }
 
-        public CreatePokemonResponse setSpecies(String species) {
+        public PokemonDTO setSpecies(String species) {
                 this.species = species;
                 return this;
         }
@@ -36,7 +36,7 @@ public class CreatePokemonResponse {
                 return trainerId;
         }
 
-        public CreatePokemonResponse setTrainerId(UUID trainerId) {
+        public PokemonDTO setTrainerId(UUID trainerId) {
                 this.trainerId = trainerId;
                 return this;
         }
@@ -45,7 +45,7 @@ public class CreatePokemonResponse {
                 return pokemonId;
         }
 
-        public CreatePokemonResponse setPokemonId(UUID pokemonId) {
+        public PokemonDTO setPokemonId(UUID pokemonId) {
                 this.pokemonId = pokemonId;
                 return this;
         }
@@ -54,7 +54,7 @@ public class CreatePokemonResponse {
                 return captureLocation;
         }
 
-        public CreatePokemonResponse setCaptureLocation(String captureLocation) {
+        public PokemonDTO setCaptureLocation(String captureLocation) {
                 this.captureLocation = captureLocation;
                 return this;
         }
@@ -63,7 +63,7 @@ public class CreatePokemonResponse {
                 return genre;
         }
 
-        public CreatePokemonResponse setGenre(String genre) {
+        public PokemonDTO setGenre(String genre) {
                 this.genre = genre;
                 return this;
         }
@@ -72,7 +72,7 @@ public class CreatePokemonResponse {
                 return ability;
         }
 
-        public CreatePokemonResponse setAbility(String ability) {
+        public PokemonDTO setAbility(String ability) {
                 this.ability = ability;
                 return this;
         }
@@ -81,7 +81,7 @@ public class CreatePokemonResponse {
                 return isShiny;
         }
 
-        public CreatePokemonResponse setShiny(Boolean shiny) {
+        public PokemonDTO setShiny(Boolean shiny) {
                 isShiny = shiny;
                 return this;
         }
@@ -90,7 +90,7 @@ public class CreatePokemonResponse {
                 return location;
         }
 
-        public CreatePokemonResponse setLocation(String location) {
+        public PokemonDTO setLocation(String location) {
                 this.location = location;
                 return this;
         }
@@ -99,7 +99,7 @@ public class CreatePokemonResponse {
                 return teamSlot;
         }
 
-        public CreatePokemonResponse setTeamSlot(Integer teamSlot) {
+        public PokemonDTO setTeamSlot(Integer teamSlot) {
                 this.teamSlot = teamSlot;
                 return this;
         }
@@ -108,7 +108,7 @@ public class CreatePokemonResponse {
                 return heldItem;
         }
 
-        public CreatePokemonResponse setHeldItem(String heldItem) {
+        public PokemonDTO setHeldItem(String heldItem) {
                 this.heldItem = heldItem;
                 return this;
         }
@@ -117,7 +117,7 @@ public class CreatePokemonResponse {
                 return movements;
         }
 
-        public CreatePokemonResponse setMovements(Set<String> movements) {
+        public PokemonDTO setMovements(Set<String> movements) {
                 this.movements = movements;
                 return this;
         }
@@ -126,10 +126,11 @@ public class CreatePokemonResponse {
                 return stats;
         }
 
-        public CreatePokemonResponse setStats(List<PokemonStat> stats) {
-            for (PokemonStat stat : stats) {
-                this.stats.add(new Stat(stat.getName().toString(), stat.getValue(), stat.getEffort()));
-            }
-            return this;
+        public PokemonDTO setStats(List<PokemonStat> stats) {
+                for (PokemonStat stat : stats) {
+                        this.stats.add(new Stat(stat.getName().toString(), stat.getValue(), stat.getEffort(),
+                                        stat.getGenetic()));
+                }
+                return this;
         }
 }

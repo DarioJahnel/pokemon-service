@@ -5,10 +5,11 @@ import org.springframework.web.reactive.function.client.WebClientRequestExceptio
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.example.pokemon_service.dto.PokemonClientResponse;
+import com.example.pokemon_service.dto.PokemonClientSpeciesResponse;
 import com.example.pokemon_service.exception.PokeApiClientException;
 
-import skaro.pokeapi.resource.NamedApiResource;
 import skaro.pokeapi.client.PokeApiClient;
+import skaro.pokeapi.resource.NamedApiResource;
 import skaro.pokeapi.resource.pokemon.Pokemon;
 import skaro.pokeapi.resource.pokemon.PokemonAbility;
 import skaro.pokeapi.resource.pokemon.PokemonHeldItem;
@@ -16,6 +17,7 @@ import skaro.pokeapi.resource.pokemon.PokemonHeldItemVersion;
 import skaro.pokeapi.resource.pokemon.PokemonMove;
 import skaro.pokeapi.resource.pokemon.PokemonMoveVersion;
 import skaro.pokeapi.resource.pokemon.PokemonType;
+import skaro.pokeapi.resource.pokemonspecies.PokemonSpecies;
 
 @Component
 public class PokeApiClientWrapper {
@@ -32,6 +34,24 @@ public class PokeApiClientWrapper {
 			return toPokemonClientResponse(pokemon);
 		} catch (WebClientResponseException.NotFound e) {
 			throw new PokeApiClientException("Couldn't find Pokemon " + idOrName);
+		} catch (WebClientResponseException e) {
+			throw new PokeApiClientException(
+					"PokeAPI returned HTTP " + e.getStatusCode().value());
+		} catch (WebClientRequestException e) {
+			throw new PokeApiClientException("PokeAPI is unavailable");
+		}
+	}
+
+	public PokemonClientSpeciesResponse getPokemonSpecies(String idOrName) {
+		try {
+			PokemonSpecies pokemonSpecies = client.getResource(PokemonSpecies.class, idOrName).block();
+			String evolvesFrom = "";
+			if (pokemonSpecies.getEvolvesFromSpecies() != null) {
+				evolvesFrom = pokemonSpecies.getEvolvesFromSpecies().getName();
+			}
+			return new PokemonClientSpeciesResponse(evolvesFrom);
+		} catch (WebClientResponseException.NotFound e) {
+			throw new PokeApiClientException("Couldn't find PokemonSpecies " + idOrName);
 		} catch (WebClientResponseException e) {
 			throw new PokeApiClientException(
 					"PokeAPI returned HTTP " + e.getStatusCode().value());

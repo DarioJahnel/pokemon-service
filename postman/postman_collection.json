@@ -13,7 +13,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n  \"species\": \"pikachu\",\r\n  \"trainerId\": \"0198f5e2-7c3a-7abc-8b12-123456789abc\",\r\n  \"genre\": \"MALE\",\r\n  \"ability\": \"static\",\r\n  \"isShiny\": false,\r\n  \"captureLocation\": \"Palet Town\",\r\n  \"stats\": [\r\n    {\r\n      \"name\": \"HP\",\r\n      \"value\": 35,\r\n      \"effort\": 0\r\n    },\r\n    {\r\n      \"name\": \"ATTACK\",\r\n      \"value\": 55,\r\n      \"effort\": 0\r\n    },\r\n    {\r\n      \"name\": \"DEFENSE\",\r\n      \"value\": 40,\r\n      \"effort\": 0\r\n    },\r\n    {\r\n      \"name\": \"SPECIAL_ATTACK\",\r\n      \"value\": 50,\r\n      \"effort\": 0\r\n    },\r\n    {\r\n      \"name\": \"SPECIAL_DEFENSE\",\r\n      \"value\": 50,\r\n      \"effort\": 0\r\n    },\r\n    {\r\n      \"name\": \"SPEED\",\r\n      \"value\": 90,\r\n      \"effort\": 0\r\n    }\r\n  ],\r\n  \"movements\": [\r\n    \"mega-punch\"\r\n  ]\r\n}",
+          "raw": "{\r\n  \"species\": \"magikarp\",\r\n  \"trainerId\": \"0198f5e2-7c3a-7abc-8b12-123456789abc\",\r\n  \"genre\": \"MALE\",\r\n  \"ability\": \"swift-swim\",\r\n  \"isShiny\": false,\r\n  \"captureLocation\": \"Palet Town\",\r\n  \"stats\": [\r\n    {\r\n      \"name\": \"HP\",\r\n      \"value\": 35,\r\n      \"effort\": 0,\r\n      \"genetic\": 0\r\n    },\r\n    {\r\n      \"name\": \"ATTACK\",\r\n      \"value\": 55,\r\n      \"effort\": 0,\r\n      \"genetic\": 0\r\n    },\r\n    {\r\n      \"name\": \"DEFENSE\",\r\n      \"value\": 40,\r\n      \"effort\": 0,\r\n      \"genetic\": 0\r\n    },\r\n    {\r\n      \"name\": \"SPECIAL_ATTACK\",\r\n      \"value\": 50,\r\n      \"effort\": 0,\r\n      \"genetic\": 0\r\n    },\r\n    {\r\n      \"name\": \"SPECIAL_DEFENSE\",\r\n      \"value\": 50,\r\n      \"effort\": 0,\r\n      \"genetic\": 0\r\n    },\r\n    {\r\n      \"name\": \"SPEED\",\r\n      \"value\": 90,\r\n      \"effort\": 0,\r\n      \"genetic\": 0\r\n    }\r\n  ],\r\n  \"movements\": [\r\n    \"tackle\"\r\n  ]\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -29,6 +29,147 @@
           "port": "8080",
           "path": [
             "pokemon"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "/pokemon",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/pokemon/01a0c4a0-20e1-7e43-b854-ddb115e70a0c",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "pokemon",
+            "01a0c4a0-20e1-7e43-b854-ddb115e70a0c"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "/pokemon/{id}/move",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/pokemon/01a0c61c-56c1-7965-8396-481f885bd5f0/move",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "pokemon",
+            "01a0c61c-56c1-7965-8396-481f885bd5f0",
+            "move"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "/pokemon/{id}/evolve",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"newSpecies\": \"gyarados\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/pokemon/01a0c61c-56c1-7965-8396-481f885bd5f0/evolve",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "pokemon",
+            "01a0c61c-56c1-7965-8396-481f885bd5f0",
+            "evolve"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "/trainers/{id}/pokemon?type=TEAM",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/trainers/0198f5e2-7c3a-7abc-8b12-123456789abc/pokemon?type=TEAM&pageSize=10&pageNumber=1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "trainers",
+            "0198f5e2-7c3a-7abc-8b12-123456789abc",
+            "pokemon"
+          ],
+          "query": [
+            {
+              "key": "type",
+              "value": "TEAM"
+            },
+            {
+              "key": "pageSize",
+              "value": "10"
+            },
+            {
+              "key": "pageNumber",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "/trainers/{id}/pokemon?type=PC_BOX",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/trainers/0198f5e2-7c3a-7abc-8b12-123456789abc/pokemon?type=PC_BOX&pageSize=10&pageNumber=1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "trainers",
+            "0198f5e2-7c3a-7abc-8b12-123456789abc",
+            "pokemon"
+          ],
+          "query": [
+            {
+              "key": "type",
+              "value": "PC_BOX"
+            },
+            {
+              "key": "pageSize",
+              "value": "10"
+            },
+            {
+              "key": "pageNumber",
+              "value": "1"
+            }
           ]
         }
       },
