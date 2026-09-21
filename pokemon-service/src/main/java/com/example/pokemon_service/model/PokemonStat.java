@@ -1,41 +1,44 @@
 package com.example.pokemon_service.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 
-@Entity 
+@Entity
 public class PokemonStat {
 
-    @Id 
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pokemon_id", nullable = false)
-    private Pokemon pokemon;
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	private Long id;
 
-    private StatType name;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "pokemon_id", nullable = false)
+	private Pokemon pokemon;
 
-    @Min(1)
-    private Integer value;
-    
-    @Min(0)
-    @Max(252)
-    private Integer effort;
+	@Enumerated(EnumType.STRING)
+	private StatType name;
 
-    public PokemonStat(Pokemon pokemon, StatType name, Integer value, Integer effort) {
-        this.pokemon = pokemon;
-        this.name = name;
-        this.value = value;
-        this.effort = effort;
-    }
+	@Column(name = "stat_value")
+	private Integer value;
+
+	private Integer effort;
+
+	protected PokemonStat() {
+	}
+
+	public PokemonStat(Pokemon pokemon, StatType name, Integer value, Integer effort) {
+		this.pokemon = pokemon;
+		this.name = name;
+		this.value = value;
+		this.effort = effort;
+	}
 
 	public Long getId() {
 		return id;
@@ -77,7 +80,4 @@ public class PokemonStat {
 		this.effort = effort;
 	}
 
-    
-
-    
 }

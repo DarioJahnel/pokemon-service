@@ -17,4 +17,28 @@ public class Trainer {
     private UUID id;
     private Integer teamCount;
     private Integer pcBoxCount;
+
+	protected Trainer() {
+	}
+
+	public UUID getId() {
+		return id;
+	}
+	public void setId(UUID id) {
+		this.id = id;
+	}
+	public Integer getTeamCount() {
+		return teamCount;
+	}
+	public void setTeamCount(Integer teamCount) {
+		this.teamCount = teamCount;
+	}
+	public Integer getPcBoxCount() {
+		return pcBoxCount;
+	}
+	public void setPcBoxCount(Integer pcBoxCount) {
+		this.pcBoxCount = pcBoxCount;
+	}
+
+    
 }
