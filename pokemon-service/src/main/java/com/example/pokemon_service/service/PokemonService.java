@@ -5,13 +5,18 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.pokemon_service.client.PokeApiClientWrapper;
 import com.example.pokemon_service.dto.CreatePokemonRequest;
-import com.example.pokemon_service.dto.CreatePokemonResponse;
+import com.example.pokemon_service.dto.EvolvePokemonRequest;
 import com.example.pokemon_service.dto.PokemonClientResponse;
+import com.example.pokemon_service.dto.PokemonClientSpeciesResponse;
+import com.example.pokemon_service.dto.PokemonDTO;
+import com.example.pokemon_service.dto.PokemonDetails;
 import com.example.pokemon_service.dto.Stat;
 import com.example.pokemon_service.exception.InvalidPokemonException;
 import com.example.pokemon_service.exception.InvalidTrainerException;
@@ -48,19 +53,12 @@ public class PokemonService {
 	}
 
 	@Transactional
-	public CreatePokemonResponse createPokemon(CreatePokemonRequest request) {
-		final UUID trainerId;
-		try {
-			trainerId = UUID.fromString(request.trainerId());
-		} catch (IllegalArgumentException exception) {
-			throw new InvalidTrainerException("Invalid trainer id");
-		}
-
+	public PokemonDTO createPokemon(CreatePokemonRequest request) {
 		Pokemon pokemon = mapCreatePokemonRequestToPokemon(request);
 
 		pokemon.validateStats();
 
-		Trainer trainer = trainerRepository.findById(trainerId).orElse(null);
+		Trainer trainer = trainerRepository.findByIdForUpdate(request.trainerId()).orElse(null);
 		if (trainer == null) {
 			throw new TrainerNotFoundException("Trainer not found");
 		}
@@ -70,7 +68,7 @@ public class PokemonService {
 
 		if (count(trainer.getTeamCount()) < teamCapacity) {
 			pokemon.setLocation(PokemonLocation.TEAM);
-			pokemon.setTeamSlot(nextTeamSlot(trainer));
+			pokemon.setTeamSlot(findEmptyTeamSlot(trainer.getId()));
 			trainer.setTeamCount(count(trainer.getTeamCount()) + 1);
 		} else if (count(trainer.getPcBoxCount()) < pcBoxCapacity) {
 			pokemon.setLocation(PokemonLocation.PC_BOX);
@@ -81,24 +79,100 @@ public class PokemonService {
 		}
 
 		pokemonRepository.save(pokemon);
-		return mapPokemonToCreatePokemonResponse(pokemon);
+		return mapPokemonToPokemonDTO(pokemon);
 
 	}
 
-	public Pokemon getPokemon(String id) {
-		final UUID inputId;
-		try {
-			inputId = UUID.fromString(id.toString());
-		} catch (IllegalArgumentException exception) {
-			throw new InvalidTrainerException("Invalid pokemon id");
-		}
-
-		Pokemon pokemon = pokemonRepository.findById(inputId).orElse(null);
+	public PokemonDTO getPokemon(UUID id) {
+		Pokemon pokemon = pokemonRepository.findById(id).orElse(null);
 		if (pokemon == null) {
 			throw new PokemonNotFoundException("Pokemon not found");
 		}
-		return pokemon;
+		return mapPokemonToPokemonDTO(pokemon);
+	}
 
+	public Page<PokemonDetails> getTrainerPokemon(UUID trainerId, PokemonLocation type, Integer pageNumber,
+			Integer pageSize) {
+		Page<PokemonDetails> response = pokemonRepository.findTrainerPokemonsByLocation(trainerId, type,
+				PageRequest.of(pageNumber - 1, pageSize)).map(this::mapToPokemonDetails);
+		if (response.isEmpty()) {
+			throw new PokemonNotFoundException("No Pokemon found for the given trainer and location");
+		}
+
+		return response;
+	}
+
+	@Transactional
+	public PokemonDTO movePokemon(UUID pokemonId) {
+		Pokemon pokemon = pokemonRepository.findById(pokemonId).orElse(null);
+		if (pokemon == null) {
+			throw new PokemonNotFoundException("Pokemon not found");
+		}
+
+		// Find trainer to obtain lock
+		UUID trainerId = pokemon.getTrainer().getId();
+		Trainer trainer = trainerRepository.findByIdForUpdate(trainerId).orElse(null);
+		if (trainer == null) {
+			throw new TrainerNotFoundException("Trainer not found");
+		}
+
+		if (pokemon.getLocation() == PokemonLocation.TEAM) {
+			if (count(trainer.getPcBoxCount()) >= pcBoxCapacity) {
+				throw new InvalidPokemonException("Cannot move Pokemon to PC Box, capacity reached");
+			}
+			pokemon.setLocation(PokemonLocation.PC_BOX);
+			pokemon.setTeamSlot(null);
+			trainer.setTeamCount(count(trainer.getTeamCount()) - 1);
+			trainer.setPcBoxCount(count(trainer.getPcBoxCount()) + 1);
+		} else if (pokemon.getLocation() == PokemonLocation.PC_BOX) {
+			if (count(trainer.getTeamCount()) >= teamCapacity) {
+				throw new InvalidPokemonException("Cannot move Pokemon to Team, capacity reached");
+			}
+			pokemon.setLocation(PokemonLocation.TEAM);
+			pokemon.setTeamSlot(findEmptyTeamSlot(trainer.getId()));
+			trainer.setPcBoxCount(count(trainer.getPcBoxCount()) - 1);
+			trainer.setTeamCount(count(trainer.getTeamCount()) + 1);
+		} else {
+			throw new InvalidPokemonException("Invalid Pokemon location type");
+		}
+
+		pokemonRepository.save(pokemon);
+		return mapPokemonToPokemonDTO(pokemon);
+	}
+
+	@Transactional
+	public PokemonDTO evolvePokemon(UUID pokemonId, EvolvePokemonRequest req) {
+		Pokemon pokemon = pokemonRepository.findById(pokemonId).orElse(null);
+		if (pokemon == null) {
+			throw new PokemonNotFoundException("Pokemon not found");
+		}
+
+		if (pokemon.getTeamSlot() == null) {
+			throw new InvalidPokemonException("Cannot evolve PC_BOX pokemon");
+		}
+
+		PokemonClientSpeciesResponse evolvedSpecies = pokeApiClient.getPokemonSpecies(req.newSpecies());
+		if (evolvedSpecies == null) {
+			throw new PokemonNotFoundException("Evolution species not found");
+		}
+
+		if (!pokemon.getSpecies().equalsIgnoreCase(evolvedSpecies.evolvesFrom())) {
+			throw new InvalidPokemonException(
+					String.format("%s cannot evolve to %s", pokemon.getSpecies(), req.newSpecies()));
+		}
+
+		PokemonClientResponse.Pokemon evolvedPokemon = pokeApiClient.getPokemon(req.newSpecies());
+		if (evolvedPokemon == null) {
+			throw new PokemonNotFoundException("Evolution pokemon not found");
+		}
+
+		pokemon.setSpecies(req.newSpecies());
+
+		String newAbility = evolvedPokemon.abilities().isEmpty() ? ""
+				: evolvedPokemon.abilities().get(0).ability().name();
+		pokemon.setAbility(newAbility);
+
+		return mapPokemonToPokemonDTO(pokemon);
 	}
 
 	private void validatePokemonAgainstAPI(Pokemon input) {
@@ -130,27 +204,30 @@ public class PokemonService {
 		return value == null ? 0 : value;
 	}
 
-	private int nextTeamSlot(Trainer trainer) {
-		return count(trainer.getTeamCount()) + 1;
-	}
-
 	private Pokemon mapCreatePokemonRequestToPokemon(CreatePokemonRequest request) {
-		Pokemon pokemon = new Pokemon(null, Genre.valueOf(request.genre()), request.ability(), request.isShiny(),
-				PokemonLocation.TEAM, null, request.heldItem(), request.species(), null, request.movements(),
-				request.captureLocation());
+		Pokemon pokemon = new Pokemon()
+				.setGenre(Genre.valueOf(request.genre()))
+				.setAbility(request.ability())
+				.setShiny(request.isShiny())
+				.setLocation(PokemonLocation.TEAM)
+				.setTeamSlot(null)
+				.setHeldItem(request.heldItem())
+				.setSpecies(request.species())
+				.setMovements(request.movements())
+				.setCaptureLocation(request.captureLocation());
 
 		List<PokemonStat> stats = new ArrayList<>();
 		for (Stat statRequest : request.stats()) {
 			stats.add(new PokemonStat(pokemon, StatType.valueOf(statRequest.name()), statRequest.value(),
-					statRequest.effort()));
+					statRequest.effort(), statRequest.genetic()));
 		}
 
 		pokemon.setStats(stats);
 		return pokemon;
 	}
 
-	private CreatePokemonResponse mapPokemonToCreatePokemonResponse(Pokemon pokemon) {
-		return new CreatePokemonResponse()
+	private PokemonDTO mapPokemonToPokemonDTO(Pokemon pokemon) {
+		return new PokemonDTO()
 				.setSpecies(pokemon.getSpecies())
 				.setTrainerId(pokemon.getTrainer().getId())
 				.setPokemonId(pokemon.getId())
@@ -163,5 +240,41 @@ public class PokemonService {
 				.setHeldItem(pokemon.getHeldItem())
 				.setMovements(pokemon.getMovements())
 				.setStats(pokemon.getStats());
+	}
+
+	private PokemonDetails mapToPokemonDetails(Pokemon pokemon) {
+		PokemonClientResponse.Pokemon apiPokemon = pokeApiClient.getPokemon(pokemon.getSpecies());
+
+		if (apiPokemon == null) {
+			throw new PokeApiClientException("Pokemon data not found");
+		}
+
+		return new PokemonDetails(
+				mapPokemonToPokemonDTO(pokemon),
+				apiPokemon.weight(),
+				apiPokemon.height(),
+				apiPokemon.types()
+						.stream()
+						.map(t -> t.type().name())
+						.toList());
+	}
+
+	private Integer findEmptyTeamSlot(UUID trainerId) {
+		List<Pokemon> pokemonList = pokemonRepository
+				.findTrainerPokemonsByLocation(trainerId, PokemonLocation.TEAM, PageRequest.of(0, teamCapacity))
+				.getContent();
+		if (pokemonList.isEmpty()) {
+			return 1;
+		} else {
+			List<Integer> occupiedSlots = pokemonList.stream()
+					.map(Pokemon::getTeamSlot)
+					.toList();
+			for (int i = 1; i <= teamCapacity; i++) {
+				if (!occupiedSlots.contains(i)) {
+					return i;
+				}
+			}
+			return null;
+		}
 	}
 }
