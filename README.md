@@ -128,3 +128,9 @@ Mueve el pokemon al PC_BOX o al team, respetando los límites predeterminados.
 Evoluciona al pokemon deseado, recibe el nombre de la evolución destino.
 - Revisa que tanto el nombre de la especie y su relación con el pokemon elegido sean válidos.
 - Updatea la habilidad del pokemon con la primer habilidad encontrada o ninguna en caso de no tener.
+
+
+# Herramientas utilizadas
+- Visual Studio Code
+- Github Copilot free tier
+- ChatGPT free tier

@@ -46,6 +46,10 @@ public class Pokemon {
 	private Set<String> movements = new java.util.HashSet<>();
 	private String captureLocation;
 
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "nature", nullable = false)
+	private Nature nature;
+
 	public Pokemon() {
 	}
 
@@ -173,6 +177,15 @@ public class Pokemon {
 
 	public Pokemon setCaptureLocation(String captureLocation) {
 		this.captureLocation = captureLocation;
+		return this;
+	}
+
+	public Nature getNature() {
+		return nature;
+	}
+
+	public Pokemon setNature(Nature nature) {
+		this.nature = nature;
 		return this;
 	}
 }

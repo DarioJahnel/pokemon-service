@@ -13,7 +13,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n  \"species\": \"magikarp\",\r\n  \"trainerId\": \"0198f5e2-7c3a-7abc-8b12-123456789abc\",\r\n  \"genre\": \"MALE\",\r\n  \"ability\": \"swift-swim\",\r\n  \"isShiny\": false,\r\n  \"captureLocation\": \"Palet Town\",\r\n  \"stats\": [\r\n    {\r\n      \"name\": \"HP\",\r\n      \"value\": 35,\r\n      \"effort\": 0,\r\n      \"genetic\": 0\r\n    },\r\n    {\r\n      \"name\": \"ATTACK\",\r\n      \"value\": 55,\r\n      \"effort\": 0,\r\n      \"genetic\": 0\r\n    },\r\n    {\r\n      \"name\": \"DEFENSE\",\r\n      \"value\": 40,\r\n      \"effort\": 0,\r\n      \"genetic\": 0\r\n    },\r\n    {\r\n      \"name\": \"SPECIAL_ATTACK\",\r\n      \"value\": 50,\r\n      \"effort\": 0,\r\n      \"genetic\": 0\r\n    },\r\n    {\r\n      \"name\": \"SPECIAL_DEFENSE\",\r\n      \"value\": 50,\r\n      \"effort\": 0,\r\n      \"genetic\": 0\r\n    },\r\n    {\r\n      \"name\": \"SPEED\",\r\n      \"value\": 90,\r\n      \"effort\": 0,\r\n      \"genetic\": 0\r\n    }\r\n  ],\r\n  \"movements\": [\r\n    \"tackle\"\r\n  ]\r\n}",
+          "raw": "{\r\n  \"species\": \"magikarp\",\r\n  \"trainerId\": \"0198f5e2-7c3a-7abc-8b12-123456789abc\",\r\n  \"genre\": \"MALE\",\r\n  \"ability\": \"swift-swim\",\r\n  \"isShiny\": false,\r\n  \"captureLocation\": \"Palet Town\",\r\n  \"stats\": [\r\n    {\r\n      \"name\": \"HP\",\r\n      \"value\": 35,\r\n      \"effort\": 0,\r\n      \"genetic\": 0\r\n    },\r\n    {\r\n      \"name\": \"ATTACK\",\r\n      \"value\": 55,\r\n      \"effort\": 0,\r\n      \"genetic\": 0\r\n    },\r\n    {\r\n      \"name\": \"DEFENSE\",\r\n      \"value\": 40,\r\n      \"effort\": 0,\r\n      \"genetic\": 0\r\n    },\r\n    {\r\n      \"name\": \"SPECIAL_ATTACK\",\r\n      \"value\": 50,\r\n      \"effort\": 0,\r\n      \"genetic\": 0\r\n    },\r\n    {\r\n      \"name\": \"SPECIAL_DEFENSE\",\r\n      \"value\": 50,\r\n      \"effort\": 0,\r\n      \"genetic\": 0\r\n    },\r\n    {\r\n      \"name\": \"SPEED\",\r\n      \"value\": 90,\r\n      \"effort\": 0,\r\n      \"genetic\": 0\r\n    }\r\n  ],\r\n  \"movements\": [\r\n    \"tackle\"\r\n  ],\r\n  \"nature\": \"brave\"\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -40,7 +40,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/pokemon/01a0c4a0-20e1-7e43-b854-ddb115e70a0c",
+          "raw": "http://localhost:8080/pokemon/01a0c985-4f30-7288-bb68-7a5e913e509c",
           "protocol": "http",
           "host": [
             "localhost"
@@ -48,7 +48,7 @@
           "port": "8080",
           "path": [
             "pokemon",
-            "01a0c4a0-20e1-7e43-b854-ddb115e70a0c"
+            "01a0c985-4f30-7288-bb68-7a5e913e509c"
           ]
         }
       },
@@ -60,7 +60,7 @@
         "method": "PATCH",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/pokemon/01a0c61c-56c1-7965-8396-481f885bd5f0/move",
+          "raw": "http://localhost:8080/pokemon/01a0c985-4f30-7288-bb68-7a5e913e509c/move",
           "protocol": "http",
           "host": [
             "localhost"
@@ -68,7 +68,7 @@
           "port": "8080",
           "path": [
             "pokemon",
-            "01a0c61c-56c1-7965-8396-481f885bd5f0",
+            "01a0c985-4f30-7288-bb68-7a5e913e509c",
             "move"
           ]
         }
@@ -90,7 +90,7 @@
           }
         },
         "url": {
-          "raw": "http://localhost:8080/pokemon/01a0c61c-56c1-7965-8396-481f885bd5f0/evolve",
+          "raw": "http://localhost:8080/pokemon/01a0c985-4f30-7288-bb68-7a5e913e509c/evolve",
           "protocol": "http",
           "host": [
             "localhost"
@@ -98,7 +98,7 @@
           "port": "8080",
           "path": [
             "pokemon",
-            "01a0c61c-56c1-7965-8396-481f885bd5f0",
+            "01a0c985-4f30-7288-bb68-7a5e913e509c",
             "evolve"
           ]
         }

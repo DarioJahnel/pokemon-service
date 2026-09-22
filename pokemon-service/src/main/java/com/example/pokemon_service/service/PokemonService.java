@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.pokemon_service.client.PokeApiClientWrapper;
 import com.example.pokemon_service.dto.CreatePokemonRequest;
 import com.example.pokemon_service.dto.EvolvePokemonRequest;
+import com.example.pokemon_service.dto.NatureClientResponse;
 import com.example.pokemon_service.dto.PokemonClientResponse;
 import com.example.pokemon_service.dto.PokemonClientSpeciesResponse;
 import com.example.pokemon_service.dto.PokemonDTO;
@@ -24,11 +25,13 @@ import com.example.pokemon_service.exception.PokeApiClientException;
 import com.example.pokemon_service.exception.PokemonNotFoundException;
 import com.example.pokemon_service.exception.TrainerNotFoundException;
 import com.example.pokemon_service.model.Genre;
+import com.example.pokemon_service.model.Nature;
 import com.example.pokemon_service.model.Pokemon;
 import com.example.pokemon_service.model.PokemonLocation;
 import com.example.pokemon_service.model.PokemonStat;
 import com.example.pokemon_service.model.StatType;
 import com.example.pokemon_service.model.Trainer;
+import com.example.pokemon_service.repository.NatureRepository;
 import com.example.pokemon_service.repository.PokemonRepository;
 import com.example.pokemon_service.repository.TrainerRepository;
 
@@ -36,17 +39,20 @@ import com.example.pokemon_service.repository.TrainerRepository;
 public class PokemonService {
 
 	private final PokemonRepository pokemonRepository;
+	private final NatureRepository natureRepository;
 	private final TrainerRepository trainerRepository;
 	private final PokeApiClientWrapper pokeApiClient;
 	private final int teamCapacity;
 	private final int pcBoxCapacity;
 
 	public PokemonService(PokemonRepository pokemonRepository, TrainerRepository trainerRepository,
+			NatureRepository natureRepository,
 			PokeApiClientWrapper pokeApiClient,
 			@Value("${pokemon.team.max-count}") int teamCapacity,
 			@Value("${pokemon.pc-box.max-count}") int pcBoxCapacity) {
 		this.pokemonRepository = pokemonRepository;
 		this.trainerRepository = trainerRepository;
+		this.natureRepository = natureRepository;
 		this.pokeApiClient = pokeApiClient;
 		this.teamCapacity = teamCapacity;
 		this.pcBoxCapacity = pcBoxCapacity;
@@ -57,6 +63,8 @@ public class PokemonService {
 		Pokemon pokemon = mapCreatePokemonRequestToPokemon(request);
 
 		pokemon.validateStats();
+
+		pokemon.setNature(findNature(request.nature()));
 
 		Trainer trainer = trainerRepository.findByIdForUpdate(request.trainerId()).orElse(null);
 		if (trainer == null) {
@@ -78,6 +86,7 @@ public class PokemonService {
 			throw new InvalidTrainerException("Cannot add more Pokemon to trainer's team or PC Box");
 		}
 
+		natureRepository.save(pokemon.getNature());
 		pokemonRepository.save(pokemon);
 		return mapPokemonToPokemonDTO(pokemon);
 
@@ -227,6 +236,21 @@ public class PokemonService {
 	}
 
 	private PokemonDTO mapPokemonToPokemonDTO(Pokemon pokemon) {
+
+		// Calculate stat buff/debuff depending on nature
+		List<Stat> adjustedStats = pokemon.getStats().stream()
+				.map(stat -> {
+					int adjustedValue = stat.getValue();
+					if (pokemon.getNature() != null && stat.getName() == pokemon.getNature().getIncreasedStat()) {
+						adjustedValue = (int) Math.round(stat.getValue() * 1.10);
+					} else if (pokemon.getNature() != null
+							&& stat.getName() == pokemon.getNature().getDecreasedStat()) {
+						adjustedValue = (int) Math.round(stat.getValue() * 0.90);
+					}
+					return new Stat(stat.getName().toString(), adjustedValue, stat.getEffort(), stat.getGenetic());
+				})
+				.toList();
+
 		return new PokemonDTO()
 				.setSpecies(pokemon.getSpecies())
 				.setTrainerId(pokemon.getTrainer().getId())
@@ -239,7 +263,8 @@ public class PokemonService {
 				.setTeamSlot(pokemon.getTeamSlot())
 				.setHeldItem(pokemon.getHeldItem())
 				.setMovements(pokemon.getMovements())
-				.setStats(pokemon.getStats());
+				.setStats(adjustedStats)
+				.setNature(pokemon.getNature().getName());
 	}
 
 	private PokemonDetails mapToPokemonDetails(Pokemon pokemon) {
@@ -276,5 +301,10 @@ public class PokemonService {
 			}
 			return null;
 		}
+	}
+
+	private Nature findNature(String natureName) {
+		NatureClientResponse apiNature = pokeApiClient.getNature(natureName);
+		return new Nature(apiNature.name(), apiNature.increasedStat(), apiNature.decreasedStat());
 	}
 }

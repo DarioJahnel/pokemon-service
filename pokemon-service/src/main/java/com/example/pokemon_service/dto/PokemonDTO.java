@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import com.example.pokemon_service.model.PokemonStat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PokemonDTO {
@@ -22,6 +21,7 @@ public class PokemonDTO {
         private String heldItem;
         private Set<String> movements;
         private List<Stat> stats = new ArrayList<>();
+        private String nature;
 
         public String getSpecies() {
                 return species;
@@ -126,11 +126,20 @@ public class PokemonDTO {
                 return stats;
         }
 
-        public PokemonDTO setStats(List<PokemonStat> stats) {
-                for (PokemonStat stat : stats) {
-                        this.stats.add(new Stat(stat.getName().toString(), stat.getValue(), stat.getEffort(),
-                                        stat.getGenetic()));
-                }
+        public PokemonDTO setStats(List<Stat> stats) {
+                this.stats = stats;
                 return this;
         }
+
+        public String getNature() {
+                return nature;
+        }
+
+        public PokemonDTO setNature(String nature) {
+                this.nature = nature;
+                return this;
+        }
+
+        
+
 }

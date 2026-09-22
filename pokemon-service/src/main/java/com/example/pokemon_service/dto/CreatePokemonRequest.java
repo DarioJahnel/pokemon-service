@@ -17,5 +17,6 @@ public record CreatePokemonRequest(
                 @NotNull String captureLocation,
                 String heldItem,
                 @NotNull @Size(min = 6, max = 6, message = "Stats must contain exactly 6 values") List<@Valid Stat> stats,
-                @NotNull Set<@Valid String> movements) {
+                @NotNull Set<@Valid String> movements,
+                @NotNull String nature) {
 }
