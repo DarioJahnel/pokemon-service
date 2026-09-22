@@ -100,6 +100,9 @@ Para mantener separadas las responsabilidades y facilitar la mantenibilidad y ex
 
 De esta forma, el cliente encargado de comunicarse con PokeAPI queda aislado de la lógica de negocio y de la API de la aplicación. Esto permite modificar o reemplazar el cliente de PokeAPI sin afectar directamente al resto de la aplicación, además de mantener una separación clara entre integración externa y lógica propia.
 
+## Cache
+El cliente provisto cuenta con una configuracion para habilitar el cacheado de los requests, si bien esto genera un ligero overhead en el primer request, los siguientes requests permiten ahorrar request a la API y mejorar la latencia.
+
 ## POST /pokemon
 Da de alta un pokemon asociado a un ID de entrenador.
 - Cada entrenador tiene un límite máximo de pokemons determinado por las variables de ambiente ubicadas en el archivo applications.properties del módulo pokemon-service.
